@@ -28,8 +28,11 @@ jobs:
           python - <<'EOF'
           import pandas as pd
           from scripts.data.validate_data import validate_credit_data
+          from scripts.data.prepare_data import prepare_data_df
 
           df = pd.read_csv('data/raw/UCI_Credit_Card.csv')
+          df = prepare_data_df(df)
+          
           try:
               validate_credit_data(df)
               print("Тесты пройдены")
