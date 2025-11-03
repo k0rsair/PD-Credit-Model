@@ -1,0 +1,35 @@
+#Docker Networks
+networks:
+  pd_credit_network:
+    driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
+
+# Workflow
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    container_name: nginx-space-plans
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/source:/var/www/html:delegated
+    depends_on:
+      - python-credit
+    networks:
+      - pd_credit_network
+  python-credit:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./docker/python:/python:delegated
+    networks:
+      - pd_credit_network
