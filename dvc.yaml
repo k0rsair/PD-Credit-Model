@@ -1,0 +1,35 @@
+stages:
+  prepare:
+    cmd: python scripts/data/prepare_data.py
+    deps:
+      - scripts/data/prepare_data.py
+      - data/raw/UCI_Credit_Card.csv
+    outs:
+      - data/processed/prepared.csv
+
+  validate:
+    cmd: python scripts/data/validate_data.py data/processed/prepared.csv
+    deps:
+      - scripts/data/validate_data.py
+      - data/processed/prepared.csv
+
+  feature_engineering:
+    cmd: python scripts/data/feature_engineering.py data/processed/prepared.csv data/processed/featured.csv
+    deps:
+      - scripts/data/feature_engineering.py
+      - data/processed/prepared.csv
+    outs:
+      - data/processed/featured.csv
+
+  train:
+    cmd: python scripts/models/train_model.py data/processed/featured.csv
+    deps:
+      - scripts/models/train_model.py
+      - scripts/models/tuning.py
+      - scripts/models/utils.py
+      - scripts/models/preprocessing.py
+      - data/processed/featured.csv
+    outs:
+      - models/
+    metrics:
+      - mlruns
